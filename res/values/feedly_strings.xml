@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+	<string name="feedly_client_id">PUT_YOUR_CLIENT_ID_HERE</string>
+	<string name="feedly_client_secret">PUT_YOUR_SECRET_HERE</string>
+	<string name="feedly_redirect_uri">http://localhost</string>
+	<string name="feedly_api_url">http://cloud.feedly.com</string>
+
+	<!-- do not change anything below this line -->
+	<string name="feedly_api_auth_header">Authorization</string>
+	
+	<string name="feedly_api_authenticate_user">/v3/auth/auth</string>
+	<string name="feedly_api_param_response_type">response_type</string>
+	<string name="feedly_api_param_response_type_default_val">code</string>
+	<string name="feedly_api_param_client_id">client_id</string>
+	<string name="feedly_api_param_redirect_uri">redirect_uri</string>
+	<string name="feedly_api_param_scope">scope</string>
+	<string name="feedly_api_param_scope_default_val">https://cloud.feedly.com/subscriptions</string>
+	<string name="feedly_api_param_state">state</string>
+	
+	<string name="feedly_api_exchange_code_for_tokens">/v3/auth/token</string>
+	<string name="feedly_api_param_client_secret">client_secret</string>
+	<string name="feedly_api_param_code">code</string>
+	<string name="feedly_api_param_grant_type">grant_type</string>
+	<string name="feedly_api_param_grant_type_default_val">authorization_code</string>
+	
+	<string name="feedly_api_access_token">access_token</string>
+	<string name="feedly_api_refresh_token">refresh_token</string>
+	<string name="feedly_api_expires_in">expires_in</string>
+	<string name="feedly_api_user_id">id</string>
+	
+	<string name="feedly_api_timestamp">timestamp</string>
+</resources>
