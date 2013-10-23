@@ -33,9 +33,9 @@ Using the Feedly API
 The ```LoadWebUrlAsyncTask``` class may be used to handle json response asynchronously.
 
 When calling ```execute``` the parameters are as follows:
-	- first parameter is the url encoded feedly api call.  This includes encoding the parameter key-value pairs!
-	- second parameter is the http method (i.e. "GET" or "POST") specified by feedly to be used for that particular api call
-	- third parameter is a valid access token
+- first parameter is the url encoded feedly api call.  This includes encoding the parameter key-value pairs!
+- second parameter is the http method (i.e. "GET" or "POST") specified by feedly to be used for that particular api call
+- third parameter is a valid access token
 
 See below for an example:
 
