@@ -15,7 +15,7 @@ Update xml resources
 In ```res/values/feedly_strings.xml``` there are some variables which must be overriden:
 
 ```feedly_client_id```, ```feedly_client_secret```, ```feedly_redirect_uri```: provided to you when you sign up for a feedly dev account
-```feedly_api_url```: This is the base api as specified  here http://developer.feedly.com/v3/.  As of 22-OCT-2013 the production endpoint is ```http://cloud.feedly.com``` and the sandbox endpoint is ```http://sandbox.feedly.com```
+```feedly_api_url```: This is the api url as specified  here http://developer.feedly.com/v3/.  As of 22-OCT-2013 the production endpoint is ```http://cloud.feedly.com``` and the sandbox endpoint is ```http://sandbox.feedly.com```
 
 
 
@@ -30,6 +30,15 @@ Once the user logs in, the access token can be retrieved via ```WebApiHelper.get
 Using the Feedly API
 --------------------
 
+The ```LoadWebUrlAsyncTask``` class may be used to handle json response asynchronously.
+
+When calling ```execute``` the parameters are as follows:
+- first parameter is the url encoded feedly api call.  This includes encoding the parameter key-value pairs!
+- second parameter is the http method (i.e. "GET" or "POST") specified by feedly to be used for that particular api call
+- third parameter is a valid access token
+
+See below for an example:
+
 ```
 	public void requestFeedlyFeeds()
 	{
@@ -38,14 +47,13 @@ Using the Feedly API
 			
 			@Override
 			public void handleResponse(String response) {
-				// this is the json response
+				// this is the json response from feedly.  Handle this however you like.
 			}
 		};
 		getFeedlyCategoriesAsyncTask.setContext(MainApplication.currentActivity);
-		getFeedlyCategoriesAsyncTask.execute("sandbox.feedly.com/v3/subscriptions/", "GET", WebApiHelper.getInstance().getAccessToken());
+		getFeedlyCategoriesAsyncTask.execute(http://sandbox.feedly.com/v3/subscriptions/", "GET", WebApiHelper.getInstance().getAccessToken());
 	}
 ```
-For ```LoadWebUrlAsyncTask```, the first parameter is the url encoded feedly api call.  The second parameter is the http method (i.e. "GET" or "POST") specified to be used by the feedly api.  The third parameter is a valid access token.
 
 
 
