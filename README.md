@@ -78,7 +78,9 @@ getFeedlyAccessTokenAsyncTask.setOnWebRequestCallback(callback);
 
 An APIRequest class needs to be instantiated.  There is a small subset of Feedly API calls found in ```com.infospace.feedly.requests```.  Additional API calls may be created using ```com.infospace.android.oauth2.WebApiRequest``` class.
 
-to create a new Feedly API Request, create a new class which extends ```WebApiRequest```.  An example would look something like this:
+To create a new Feedly API Request, first update the feedly_strings.xml with strings representing the API Method name, API Method Parameter names and API Method Parameter Default values (if any).
+
+Next create a new class which extends ```WebApiRequest```.  An example would look something like this:
 
 ```
 package com.infospace.feedly.requests;
@@ -90,7 +92,7 @@ import com.insp.android.oauth2.R;
 
 public class SomeNewFeedlyApiMethod extends WebApiRequest
 {
-	public GetFeedlyCodeRequest(Context context)
+	public SomeNewFeedlyApiMethod(Context context)
 	{
 		super(context.getResources().getString(R.string.feedly_api_url), "GET", context);
 		setMethod(R.string.feedly_api_method_name_in_strings_xml);
