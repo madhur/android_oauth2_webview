@@ -1,4 +1,4 @@
-package com.insp.android.oauth2;
+package com.infospace.android.oauth2;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
+
+import com.insp.android.oauth2.R;
 
 import android.content.Context;
 import android.content.SharedPreferences;

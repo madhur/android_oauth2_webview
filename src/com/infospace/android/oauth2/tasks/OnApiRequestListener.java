@@ -1,4 +1,4 @@
-package com.insp.android.oauth2.tasks;
+package com.infospace.android.oauth2.tasks;
 
 public interface OnApiRequestListener
 {

@@ -1,9 +1,9 @@
-package com.insp.android.oauth2.tasks;
+package com.infospace.android.oauth2.tasks;
 
 import java.io.*;
 import java.net.*;
 
-import com.insp.android.oauth2.WebApiRequest;
+import com.infospace.android.oauth2.WebApiRequest;
 
 import android.os.AsyncTask;
 import android.text.TextUtils;

@@ -1,4 +1,4 @@
-package com.insp.android.oauth2;
+package com.infospace.android.oauth2;
 
 import java.net.*;
 import java.security.InvalidParameterException;
@@ -8,10 +8,11 @@ import org.apache.http.NameValuePair;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.json.*;
 
-import com.insp.android.oauth2.tasks.LoadWebUrlAsyncTask;
-import com.insp.android.oauth2.tasks.OnApiRequestListener;
-import com.insp.feedly.requests.RefreshTokenRequest;
-import com.insp.feedly.requests.RetrieveOAuth2TokenRequest;
+import com.infospace.android.oauth2.tasks.LoadWebUrlAsyncTask;
+import com.infospace.android.oauth2.tasks.OnApiRequestListener;
+import com.infospace.feedly.requests.RefreshTokenRequest;
+import com.infospace.feedly.requests.RetrieveOAuth2TokenRequest;
+import com.insp.android.oauth2.R;
 
 import android.content.*;
 import android.content.SharedPreferences.Editor;

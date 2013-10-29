@@ -1,9 +1,10 @@
-package com.insp.android.oauth2;
+package com.infospace.android.oauth2;
 
 
-import com.insp.android.oauth2.WebApiHelper;
-import com.insp.android.oauth2.tasks.OnApiRequestListener;
-import com.insp.feedly.requests.GetFeedlyCodeRequest;
+import com.infospace.android.oauth2.WebApiHelper;
+import com.infospace.android.oauth2.tasks.OnApiRequestListener;
+import com.infospace.feedly.requests.GetFeedlyCodeRequest;
+import com.insp.android.oauth2.R;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;

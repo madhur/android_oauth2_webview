@@ -1,9 +1,9 @@
-package com.insp.feedly.requests;
+package com.infospace.feedly.requests;
 
 import android.content.Context;
 
+import com.infospace.android.oauth2.WebApiRequest;
 import com.insp.android.oauth2.R;
-import com.insp.android.oauth2.WebApiRequest;
 
 public class RetrieveSubscriptionsRequest extends WebApiRequest
 {
