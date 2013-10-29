@@ -9,10 +9,14 @@ import org.apache.http.client.utils.URLEncodedUtils;
 import org.json.*;
 
 import com.insp.android.oauth2.tasks.LoadWebUrlAsyncTask;
+import com.insp.android.oauth2.tasks.OnApiRequestListener;
+import com.insp.feedly.requests.RefreshTokenRequest;
+import com.insp.feedly.requests.RetrieveOAuth2TokenRequest;
 
 import android.content.*;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
+import android.text.TextUtils;
 
 public class WebApiHelper
 {
@@ -40,13 +44,7 @@ public class WebApiHelper
 		return instance;
 	}
 	
-	private WebApiRequest getRequest()
-	{
-		WebApiRequest request = new WebApiRequest(context.getResources().getString(R.string.feedly_api_url), context);
-		return request;
-	}
-	
-	public boolean handleFeedlyAuthenticationResponse(String url, final Context context)
+	public boolean handleFeedlyAuthenticationResponse(String url, OnApiRequestListener callback)
 	{
 		if (!url.startsWith(getResourceString(R.string.feedly_redirect_uri)))
 		{
@@ -70,16 +68,17 @@ public class WebApiHelper
 				}
 			}
 		};
-		getFeedlyAccessTokenAsyncTask.setContext(context);
-		getFeedlyAccessTokenAsyncTask.execute(WebApiHelper.getInstance().getFeedlyAccessTokenUrl(code), "POST");
+		getFeedlyAccessTokenAsyncTask.setOnWebRequestCallback(callback);
+		WebApiRequest request = new RetrieveOAuth2TokenRequest(context, code);
+		getFeedlyAccessTokenAsyncTask.execute(request);
 		return true;
 	}
 	
-	public void refreshAccessTokenIfNeeded(Context activityContext)
+	public void refreshAccessTokenIfNeeded(OnApiRequestListener callback)
 	{
 		if (shouldRefreshAccesToken())
 		{
-			refreshAccessToken(activityContext);
+			refreshAccessToken(callback);
 			onRefreshedTokens();
 		}
 	}
@@ -104,17 +103,24 @@ public class WebApiHelper
 		return false;
 	}
 	
-	public void refreshAccessToken(final Context context)
+	public void refreshAccessToken(OnApiRequestListener callback)
 	{
-		LoadWebUrlAsyncTask refreshFeedlyAcessTokensAsyncTask = new LoadWebUrlAsyncTask() {
-			
+		String refreshToken = getSharedPreferenceValue(R.string.feedly_api_refresh_token);
+		if (TextUtils.isEmpty(refreshToken))
+		{
+			return;
+		}
+		LoadWebUrlAsyncTask refreshFeedlyAcessTokensAsyncTask = new LoadWebUrlAsyncTask()
+		{
 			@Override
-			public void handleResponse(String response) {
+			public void handleResponse(String response)
+			{
 				saveFeedlyRefreshTokenFromResponseToPreferences(response);
 			}
 		};
-		refreshFeedlyAcessTokensAsyncTask.setContext(context);
-		refreshFeedlyAcessTokensAsyncTask.execute(getFeedlyRefreshTokenUrl(getResourceString(R.string.feedly_api_refresh_token)), "POST");
+		refreshFeedlyAcessTokensAsyncTask.setOnWebRequestCallback(callback);
+		WebApiRequest request = new RefreshTokenRequest(context, refreshToken);
+		refreshFeedlyAcessTokensAsyncTask.execute(request);
 	}
 	
 	private boolean saveFeedlyRefreshTokenFromResponseToPreferences(String response)
@@ -209,50 +215,10 @@ public class WebApiHelper
 		return context.getResources().getString(resourceId);
 	}
 	
-	
-	public String getAccessToken()
-	{
-		return getSharedPreferenceValue(R.string.feedly_api_access_token);
-	}
-	
 	private String getSharedPreferenceValue(int resourceKeyId)
 	{
 		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
 		String preferenceValue = preferences.getString(context.getResources().getString(resourceKeyId), "");
 		return preferenceValue;
-	}
-	
-	public String getFeedlyRefreshTokenUrl(String refreshToken)
-	{
-		WebApiRequest request = getRequest();
-		request.setMethod(R.string.feedly_api_exchange_code_for_tokens);
-		request.addParam(R.string.feedly_api_refresh_token, refreshToken);
-		request.addParam(R.string.feedly_api_param_client_id, R.string.feedly_client_id);
-		request.addParam(R.string.feedly_api_param_client_secret, R.string.feedly_client_secret);
-		request.addParam(R.string.feedly_api_param_grant_type, R.string.feedly_api_refresh_token);
-		return request.getEncodedUrl();
-	}
-
-	public String getFeedlyAccessTokenUrl(String accessToken)
-	{
-		WebApiRequest request = getRequest();
-		request.setMethod(R.string.feedly_api_exchange_code_for_tokens);
-		request.addParam(R.string.feedly_api_param_client_id, R.string.feedly_client_id);
-		request.addParam(R.string.feedly_api_param_redirect_uri, R.string.feedly_redirect_uri);
-		request.addParam(R.string.feedly_api_param_code, accessToken);
-		request.addParam(R.string.feedly_api_param_client_secret, R.string.feedly_client_secret);
-		request.addParam(R.string.feedly_api_param_grant_type, R.string.feedly_api_param_grant_type_default_val);
-		return request.getEncodedUrl();
-	}
-	
-	public String getFeedlyLoginUrl()
-	{
-		WebApiRequest request = getRequest();
-		request.setMethod(R.string.feedly_api_authenticate_user);
-		request.addParam(R.string.feedly_api_param_response_type, R.string.feedly_api_param_response_type_default_val);
-		request.addParam(R.string.feedly_api_param_client_id, R.string.feedly_client_id);
-		request.addParam(R.string.feedly_api_param_redirect_uri, R.string.feedly_redirect_uri);
-		request.addParam(R.string.feedly_api_param_scope, R.string.feedly_api_param_scope_default_val);
-		return request.getEncodedUrl();
 	}
 }

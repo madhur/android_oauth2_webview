@@ -2,6 +2,8 @@ package com.insp.android.oauth2;
 
 
 import com.insp.android.oauth2.WebApiHelper;
+import com.insp.android.oauth2.tasks.OnApiRequestListener;
+import com.insp.feedly.requests.GetFeedlyCodeRequest;
 
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
@@ -16,8 +18,40 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class AuthenticationFragment extends Fragment
+public class AuthenticationFragment extends Fragment implements OnApiRequestListener
 {	
+	
+	private ProgressDialog authenticationDialog;
+	
+	@Override
+	public void onException(Exception ex)
+	{
+		
+	}
+	
+	@Override
+	public void onFinishRequest()
+	{
+		if (authenticationDialog == null)
+		{
+			return;
+		}
+		authenticationDialog.dismiss();
+		authenticationDialog = null;
+	}
+	
+	@Override
+	public void onStartRequest()
+	{
+		if (authenticationDialog == null)
+		{
+			authenticationDialog = new ProgressDialog(getActivity());
+		}
+		authenticationDialog.dismiss();
+		authenticationDialog.setTitle("Requesting...");
+		authenticationDialog.show();
+	}
+	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
@@ -69,7 +103,7 @@ public class AuthenticationFragment extends Fragment
 			
 			public boolean shouldOverrideUrlLoading(WebView view, String url)
 			{
-				if (WebApiHelper.getInstance().handleFeedlyAuthenticationResponse(url, getActivity()))
+				if (WebApiHelper.getInstance().handleFeedlyAuthenticationResponse(url, AuthenticationFragment.this))
 				{
 					return true;
 				}
@@ -100,8 +134,8 @@ public class AuthenticationFragment extends Fragment
 			description.getSettings().setUseWideViewPort(isTablet);
 			description.setWebChromeClient(this.getWebChromeClient());
 			description.setWebViewClient(this.getWebViewClient());
-			
-			description.loadUrl(WebApiHelper.getInstance().getFeedlyLoginUrl());
+			GetFeedlyCodeRequest request = new GetFeedlyCodeRequest(getActivity());
+			description.loadUrl(request.getEncodedUrl());
 		}
 	}
 	

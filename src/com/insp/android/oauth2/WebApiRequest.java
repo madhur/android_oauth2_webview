@@ -9,17 +9,36 @@ import org.apache.http.NameValuePair;
 
 import android.content.Context;
 
-public class WebApiRequest
+public abstract class WebApiRequest
 {
 	private String apiUrl;
 	private String apiMethod;
 	private List<NameValuePair> params;
 	private Context context;
+	private String requestMethod;
 	
-	public WebApiRequest(String apiUrl, Context context)
+	private String oAuthToken;
+	
+	public WebApiRequest(String apiUrl, String requestMethod, Context context)
 	{
 		this.apiUrl = apiUrl;
 		this.context = context;
+		this.requestMethod = requestMethod;
+	}
+	
+	public void setOAuthToken(String token)
+	{
+		oAuthToken = token;
+	}
+	
+	public String getOAuthToken()
+	{
+		return oAuthToken;
+	}
+	
+	public String getRequestMethod()
+	{
+		return requestMethod;
 	}
 	
 	public WebApiRequest setMethod(int methodStringId)

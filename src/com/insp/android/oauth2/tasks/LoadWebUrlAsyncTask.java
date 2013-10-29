@@ -3,49 +3,61 @@ package com.insp.android.oauth2.tasks;
 import java.io.*;
 import java.net.*;
 
-import android.app.ProgressDialog;
-import android.content.Context;
+import com.insp.android.oauth2.WebApiRequest;
+
 import android.os.AsyncTask;
+import android.text.TextUtils;
 
-public abstract class LoadWebUrlAsyncTask extends AsyncTask<String, Void, String>
+public abstract class LoadWebUrlAsyncTask extends AsyncTask<WebApiRequest, Void, String>
 {
-
-	private ProgressDialog dialog;
+	private OnApiRequestListener apiListener;
 	
-	public void setContext(Context context)
+	public void setOnWebRequestCallback(OnApiRequestListener callback)
 	{
-		dialog = new ProgressDialog(context);
+		this.apiListener = callback;
 	}
 	
 	@Override
 	protected void onPreExecute()
 	{
 		super.onPreExecute();
-		dialog.setTitle("Authorizing...");
-		dialog.show();
+		if (apiListener != null)
+		{
+			apiListener.onStartRequest();
+		}
 	}
 	
 	@Override
-	protected String doInBackground(String... params)
+	protected String doInBackground(WebApiRequest... request)
 	{
 		try
 		{
-			URL url = new URL(params[0]);
-			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-			conn.setRequestMethod(params[1]);
-			if (params.length == 3)
+			if (request == null)
 			{
-				conn.setRequestProperty("Authorization", "OAuth " + params[2]);
+				return null;
+			}
+			if (request.length != 1)
+			{
+				return null;
+			}
+			URL url = new URL(request[0].getEncodedUrl());
+			HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+			conn.setRequestMethod(request[0].getRequestMethod());
+			if (!TextUtils.isEmpty(request[0].getOAuthToken()))
+			{
+				conn.setRequestProperty("Authorization", "OAuth " + request[0].getOAuthToken());
 			}
 			return readStream(conn.getInputStream());
 		}
 		catch (MalformedURLException e)
 		{
 			e.printStackTrace();
+			callWebRequestException(e);
 		}
 		catch (IOException e)
 		{
 			e.printStackTrace();
+			callWebRequestException(e);
 		}
 		return null;
 	}
@@ -67,6 +79,7 @@ public abstract class LoadWebUrlAsyncTask extends AsyncTask<String, Void, String
 		catch (IOException ex)
 		{
 			ex.printStackTrace();
+			callWebRequestException(ex);
 		}
 		finally
 		{
@@ -79,18 +92,31 @@ public abstract class LoadWebUrlAsyncTask extends AsyncTask<String, Void, String
 				catch (IOException ex)
 				{
 					ex.printStackTrace();
+					callWebRequestException(ex);
 				}
 			}
 		}
 		return page;
 		
 	}
+	
+	private void callWebRequestException(Exception ex)
+	{
+		if (apiListener == null)
+		{
+			return;
+		}
+		apiListener.onException(ex);
+	}
 
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
 		handleResponse(result);
-		dialog.dismiss();
+		if (apiListener != null)
+		{
+			apiListener.onFinishRequest();
+		}
 	}
 	
 	public abstract void handleResponse(String response);
