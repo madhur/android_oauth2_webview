@@ -30,32 +30,87 @@ Once the user logs in, the access token can be retrieved via ```WebApiHelper.get
 Using the Feedly API
 --------------------
 
-The ```LoadWebUrlAsyncTask``` class may be used to handle json response asynchronously.
+```LoadWebUrlAsyncTask```, ```OnApiRequestListener``` and ```WebApiRequest``` classes are used to create web requests and handle JSON responses.
 
-When calling ```execute``` the parameters are as follows:
-- first parameter is the url encoded feedly api call.  This includes encoding the parameter key-value pairs!
-- second parameter is the http method (i.e. "GET" or "POST") specified by feedly to be used for that particular api call
-- third parameter is a valid access token
+First you must initialize an ```OnApiRequestListener```.  This class is notified when events in the HTTP request lifecycle occur.  The most common use for this:
 
-See below for an example:
+```OnStartRequest```: Called when an HTTP request is initiated.  Can be useful for setting ProgressDialogs.
+
+```OnFinishRequest```: Called once the HTTP request successfully completes.  Useful for dismissing ProgressDialogs as well as processing the request Data.
+
+```OnException```: Called if an exception is encountered while a request is in progress.
+
+[Here](https://github.com/infospace/android_oauth2_webview/blob/master/src/com/infospace/android/oauth2/AuthenticationFragment.java#L77) is an example implementation from github.
 
 ```
-	public void requestFeedlyFeeds()
+OnApiRequestListener listener = new OnApiRequestListener() {
+	
+	@Override
+	public void onStartRequest()
 	{
-		LoadWebUrlAsyncTask getFeedlyCategoriesAsyncTask = new LoadWebUrlAsyncTask()
-		{
-			
-			@Override
-			public void handleResponse(String response) {
-				// this is the json response from feedly.  Handle this however you like.
-			}
-		};
-		getFeedlyCategoriesAsyncTask.setContext(MainApplication.currentActivity);
-		getFeedlyCategoriesAsyncTask.execute(http://sandbox.feedly.com/v3/subscriptions/", "GET", WebApiHelper.getInstance().getAccessToken());
+		showAuthenticationDialog("Loading...");
 	}
+	
+	@Override
+	public void onFinishRequest(String response)
+	{
+		if(WebApiHelper.getInstance().saveFeedlyTokensFromResponseToPreferences(response))
+		{
+			// do something
+		}
+		hideAuthenticationDialog();
+	}
+	
+	@Override
+	public void onException(Exception ex)
+	{
+		
+	}
+};
 ```
 
+Once you have an OnApiRequestListener, a ```LoadWebUrlAsyncTask``` should be instantationed and assigned the listener:
 
+```
+LoadWebUrlAsyncTask getFeedlyAccessTokenAsyncTask = new LoadWebUrlAsyncTask();
+getFeedlyAccessTokenAsyncTask.setOnWebRequestCallback(callback);
+```
+
+An APIRequest class needs to be instantiated.  There is a small subset of Feedly API calls found in ```com.infospace.feedly.requests```.  Additional API calls may be created using ```com.infospace.android.oauth2.WebApiRequest``` class.
+
+to create a new Feedly API Request, create a new class which extends ```WebApiRequest```.  An example would look something like this:
+
+```
+package com.infospace.feedly.requests;
+
+import android.content.Context;
+
+import com.infospace.android.oauth2.WebApiRequest;
+import com.insp.android.oauth2.R;
+
+public class SomeNewFeedlyApiMethod extends WebApiRequest
+{
+	public GetFeedlyCodeRequest(Context context)
+	{
+		super(context.getResources().getString(R.string.feedly_api_url), "GET", context);
+		setMethod(R.string.feedly_api_method_name_in_strings_xml);
+		addParam(R.string.feedly_api_param_name, R.string.param_value);
+	}
+}
+```
+
+The new class should call ```super(context.getResources().getString(R.string.feedly_api_url), "GET", context);``` in the constructor.  The "GET" should be replaced with the HTTP Request method as specified by the Feedly API.
+
+The constructor must also call setMethod and provide the Resource ID of the method name in the strings.xml file.
+
+Lastly any parameters must be applied as well.  The first value must be a reference to a string resource.  This string resource must correspond to a parameter name as defined by feedly.  All params as defined by feedly should be accounted for here.  the second value may be either a reference to a string resource or a string.
+
+Once a WebApiRequest has been defined and instantiated, you can start the request using:
+
+```
+WebApiRequest request = new RetrieveOAuth2TokenRequest(context, code);
+getFeedlyAccessTokenAsyncTask.execute(request);
+```
 
 Sample Fragment Implementation:
 --------------------------------
