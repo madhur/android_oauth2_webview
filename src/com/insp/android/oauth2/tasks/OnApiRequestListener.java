@@ -3,6 +3,6 @@ package com.insp.android.oauth2.tasks;
 public interface OnApiRequestListener
 {
 	public void onStartRequest();
-	public void onFinishRequest();
+	public void onFinishRequest(String response);
 	public void onException(Exception ex);
 }

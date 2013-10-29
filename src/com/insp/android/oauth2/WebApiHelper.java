@@ -57,29 +57,18 @@ public class WebApiHelper
 			return false;
 		}
 		
-		LoadWebUrlAsyncTask getFeedlyAccessTokenAsyncTask = new LoadWebUrlAsyncTask()
-		{
-			@Override
-			public void handleResponse(String response)
-			{
-				if(saveFeedlyTokensFromResponseToPreferences(response))
-				{
-					onRetrievedOAuthTokens();
-				}
-			}
-		};
+		LoadWebUrlAsyncTask getFeedlyAccessTokenAsyncTask = new LoadWebUrlAsyncTask();
 		getFeedlyAccessTokenAsyncTask.setOnWebRequestCallback(callback);
 		WebApiRequest request = new RetrieveOAuth2TokenRequest(context, code);
 		getFeedlyAccessTokenAsyncTask.execute(request);
 		return true;
 	}
 	
-	public void refreshAccessTokenIfNeeded(OnApiRequestListener callback)
+	public void refreshAccessTokenIfNeeded()
 	{
 		if (shouldRefreshAccesToken())
 		{
-			refreshAccessToken(callback);
-			onRefreshedTokens();
+			refreshAccessToken();
 		}
 	}
 	
@@ -103,22 +92,38 @@ public class WebApiHelper
 		return false;
 	}
 	
-	public void refreshAccessToken(OnApiRequestListener callback)
+	public void refreshAccessToken()
 	{
 		String refreshToken = getSharedPreferenceValue(R.string.feedly_api_refresh_token);
 		if (TextUtils.isEmpty(refreshToken))
 		{
 			return;
 		}
-		LoadWebUrlAsyncTask refreshFeedlyAcessTokensAsyncTask = new LoadWebUrlAsyncTask()
-		{
+		LoadWebUrlAsyncTask refreshFeedlyAcessTokensAsyncTask = new LoadWebUrlAsyncTask();
+		OnApiRequestListener requestListener = new OnApiRequestListener() {
+			
 			@Override
-			public void handleResponse(String response)
+			public void onStartRequest()
+			{
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void onFinishRequest(String response)
 			{
 				saveFeedlyRefreshTokenFromResponseToPreferences(response);
 			}
+			
+			@Override
+			public void onException(Exception ex)
+			{
+				// TODO Auto-generated method stub
+				
+			}
 		};
-		refreshFeedlyAcessTokensAsyncTask.setOnWebRequestCallback(callback);
+		
+		refreshFeedlyAcessTokensAsyncTask.setOnWebRequestCallback(requestListener);
 		WebApiRequest request = new RefreshTokenRequest(context, refreshToken);
 		refreshFeedlyAcessTokensAsyncTask.execute(request);
 	}
@@ -144,19 +149,9 @@ public class WebApiHelper
 		}
 		return false;
 	}
-	
-	private void onRetrievedOAuthTokens()
-	{
-		// TODO: put code here on what to do after authentication
-	}
-	
-	private void onRefreshedTokens()
-	{
-		
-	}
 
 	// TODO: error checking here for invalid json, connection issues, invalid auth token, 404, etc
-	private boolean saveFeedlyTokensFromResponseToPreferences(String response)
+	public boolean saveFeedlyTokensFromResponseToPreferences(String response)
 	{
 		try
 		{

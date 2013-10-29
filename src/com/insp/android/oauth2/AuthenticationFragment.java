@@ -18,39 +18,9 @@ import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-public class AuthenticationFragment extends Fragment implements OnApiRequestListener
-{	
-	
-	private ProgressDialog authenticationDialog;
-	
-	@Override
-	public void onException(Exception ex)
-	{
-		
-	}
-	
-	@Override
-	public void onFinishRequest()
-	{
-		if (authenticationDialog == null)
-		{
-			return;
-		}
-		authenticationDialog.dismiss();
-		authenticationDialog = null;
-	}
-	
-	@Override
-	public void onStartRequest()
-	{
-		if (authenticationDialog == null)
-		{
-			authenticationDialog = new ProgressDialog(getActivity());
-		}
-		authenticationDialog.dismiss();
-		authenticationDialog.setTitle("Requesting...");
-		authenticationDialog.show();
-	}
+public class AuthenticationFragment extends Fragment
+{
+	public ProgressDialog authenticationDialog;
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
@@ -103,13 +73,58 @@ public class AuthenticationFragment extends Fragment implements OnApiRequestList
 			
 			public boolean shouldOverrideUrlLoading(WebView view, String url)
 			{
-				if (WebApiHelper.getInstance().handleFeedlyAuthenticationResponse(url, AuthenticationFragment.this))
+				OnApiRequestListener listener = new OnApiRequestListener() {
+					
+					@Override
+					public void onStartRequest()
+					{
+						showAuthenticationDialog("Loading...");
+					}
+					
+					@Override
+					public void onFinishRequest(String response)
+					{
+						if(WebApiHelper.getInstance().saveFeedlyTokensFromResponseToPreferences(response))
+						{
+							// do something
+						}
+						hideAuthenticationDialog();
+					}
+					
+					@Override
+					public void onException(Exception ex)
+					{
+						
+					}
+				};
+				if (WebApiHelper.getInstance().handleFeedlyAuthenticationResponse(url, listener))
 				{
 					return true;
 				}
         		return super.shouldOverrideUrlLoading(view, url);
         	}
 		};
+	}
+	
+	private void showAuthenticationDialog(String title)
+	{
+		if (authenticationDialog == null)
+		{
+			authenticationDialog = new ProgressDialog(getActivity());
+		}
+		authenticationDialog.dismiss();
+		authenticationDialog.setTitle(title);
+		authenticationDialog.show();
+	}
+	
+	private void hideAuthenticationDialog()
+	{
+		if (authenticationDialog == null)
+		{
+			return;
+		}
+		authenticationDialog.dismiss();
+		authenticationDialog = null;
 	}
 
 	@SuppressLint("SetJavaScriptEnabled")

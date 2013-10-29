@@ -23,6 +23,8 @@
 	<string name="feedly_api_param_grant_type">grant_type</string>
 	<string name="feedly_api_param_grant_type_default_val">authorization_code</string>
 	
+	<string name="feedly_api_get_subscriptions">/v3/subscriptions</string>
+	
 	<string name="feedly_api_access_token">access_token</string>
 	<string name="feedly_api_refresh_token">refresh_token</string>
 	<string name="feedly_api_expires_in">expires_in</string>

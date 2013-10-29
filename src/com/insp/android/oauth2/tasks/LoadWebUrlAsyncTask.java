@@ -8,7 +8,7 @@ import com.insp.android.oauth2.WebApiRequest;
 import android.os.AsyncTask;
 import android.text.TextUtils;
 
-public abstract class LoadWebUrlAsyncTask extends AsyncTask<WebApiRequest, Void, String>
+public class LoadWebUrlAsyncTask extends AsyncTask<WebApiRequest, Void, String>
 {
 	private OnApiRequestListener apiListener;
 	
@@ -112,12 +112,9 @@ public abstract class LoadWebUrlAsyncTask extends AsyncTask<WebApiRequest, Void,
 	@Override
 	protected void onPostExecute(String result) {
 		super.onPostExecute(result);
-		handleResponse(result);
 		if (apiListener != null)
 		{
-			apiListener.onFinishRequest();
+			apiListener.onFinishRequest(result);
 		}
 	}
-	
-	public abstract void handleResponse(String response);
 }

@@ -8,6 +8,8 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
 
 public abstract class WebApiRequest
 {
@@ -17,8 +19,6 @@ public abstract class WebApiRequest
 	private Context context;
 	private String requestMethod;
 	
-	private String oAuthToken;
-	
 	public WebApiRequest(String apiUrl, String requestMethod, Context context)
 	{
 		this.apiUrl = apiUrl;
@@ -26,14 +26,16 @@ public abstract class WebApiRequest
 		this.requestMethod = requestMethod;
 	}
 	
-	public void setOAuthToken(String token)
-	{
-		oAuthToken = token;
-	}
-	
 	public String getOAuthToken()
 	{
-		return oAuthToken;
+		return getSharedPreferenceValue(R.string.feedly_api_access_token);
+	}
+	
+	private String getSharedPreferenceValue(int resourceKeyId)
+	{
+		SharedPreferences preferences = PreferenceManager.getDefaultSharedPreferences(context);
+		String preferenceValue = preferences.getString(context.getResources().getString(resourceKeyId), "");
+		return preferenceValue;
 	}
 	
 	public String getRequestMethod()
@@ -43,6 +45,10 @@ public abstract class WebApiRequest
 	
 	public WebApiRequest setMethod(int methodStringId)
 	{
+		if (context == null)
+		{
+			return this;
+		}
 		String methodName = context.getString(methodStringId);
 		return setMethod(methodName);
 	}
@@ -55,12 +61,20 @@ public abstract class WebApiRequest
 
 	public WebApiRequest addParam(int nameId, int valueId)
 	{
+		if (context == null)
+		{
+			return this;
+		}
 		String value = context.getString(valueId);
 		return addParam(nameId, value);
 	}
 	
 	public WebApiRequest addParam(int nameId, String value)
 	{
+		if (context == null)
+		{
+			return this;
+		}
 		String name = context.getString(nameId);
 		return addParam(name, value);
 	}
