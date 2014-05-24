@@ -53,7 +53,7 @@ public class AuthenticationFragment extends Fragment
 	public WebViewClient getWebViewClient()
 	{
 		final ProgressDialog dialog = new ProgressDialog(getActivity());
-		dialog.setTitle("Loading Website... Please Wait");
+		dialog.setTitle(getString(R.string.feedly_loading_message));
 		return new WebViewClient()
 		{
 			@Override
@@ -79,7 +79,7 @@ public class AuthenticationFragment extends Fragment
 					@Override
 					public void onStartRequest()
 					{
-						showAuthenticationDialog("Loading...");
+						showAuthenticationDialog(getString(R.string.feedly_loading_message));
 					}
 					
 					@Override

@@ -1,5 +1,5 @@
 <resources>
 
     <string name="app_name">OAuth2Authentication</string>
-
+	<string name="feedly_loading_message">Loading...Please wait</string>
 </resources>
