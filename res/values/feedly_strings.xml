@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-	<string name="feedly_client_id">PUT_YOUR_CLIENT_ID_HERE</string>
-	<string name="feedly_client_secret">PUT_YOUR_SECRET_HERE</string>
-	<string name="feedly_redirect_uri">http://localhost</string>
-	<string name="feedly_api_url">http://cloud.feedly.com</string>
+	<string name="feedly_client_id">sandbox</string>
+	<string name="feedly_client_secret">0AUDIAHZEB0ISJ1JLFWZ</string>
+	<string name="feedly_redirect_uri">http://localhost:8080</string>
+	<string name="feedly_api_url">https://sandbox.feedly.com</string>
 
 	<!-- do not change anything below this line -->
 	<string name="feedly_api_auth_header">Authorization</string>

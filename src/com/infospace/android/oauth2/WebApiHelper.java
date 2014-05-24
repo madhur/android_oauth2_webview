@@ -113,7 +113,8 @@ public class WebApiHelper
 			@Override
 			public void onFinishRequest(String response)
 			{
-				saveFeedlyRefreshTokenFromResponseToPreferences(response);
+				if(response!=null)
+					saveFeedlyRefreshTokenFromResponseToPreferences(response);
 			}
 			
 			@Override

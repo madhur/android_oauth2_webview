@@ -87,7 +87,8 @@ public class AuthenticationFragment extends Fragment
 					{
 						if(WebApiHelper.getInstance().saveFeedlyTokensFromResponseToPreferences(response))
 						{
-							// do something
+							getActivity().setResult(1);
+							getActivity().finish();
 						}
 						hideAuthenticationDialog();
 					}
