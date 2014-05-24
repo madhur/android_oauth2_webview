@@ -14,6 +14,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.CookieManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -26,6 +27,8 @@ public class AuthenticationFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		CookieManager.getInstance().removeAllCookie();
+		
 		return inflater.inflate(R.layout.feedly_oauth2_browser, container, false);
 	}
 	
