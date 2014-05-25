@@ -15,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.CookieManager;
+import android.webkit.CookieSyncManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
@@ -27,6 +28,7 @@ public class AuthenticationFragment extends Fragment
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		CookieSyncManager.createInstance(getActivity());
 		CookieManager.getInstance().removeAllCookie();
 		
 		return inflater.inflate(R.layout.feedly_oauth2_browser, container, false);
@@ -90,8 +92,9 @@ public class AuthenticationFragment extends Fragment
 					{
 						if(WebApiHelper.getInstance().saveFeedlyTokensFromResponseToPreferences(response))
 						{
-							getActivity().setResult(1);
-							getActivity().finish();
+							LoginListener loginListener=(LoginListener) getActivity();
+							
+							loginListener.Login();
 						}
 						hideAuthenticationDialog();
 					}
