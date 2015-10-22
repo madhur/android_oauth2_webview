@@ -18,6 +18,7 @@ import android.content.*;
 import android.content.SharedPreferences.Editor;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
+import android.util.Log;
 
 public class WebApiHelper
 {
@@ -157,6 +158,9 @@ public class WebApiHelper
 	{
 		try
 		{
+			Log.e("WebView", "Response: " + response);
+
+
 			JSONObject json = new JSONObject(response);
 			String accessToken = json.getString(getResourceString(R.string.feedly_api_access_token));
 			String refreshToken = json.getString(getResourceString(R.string.feedly_api_refresh_token));

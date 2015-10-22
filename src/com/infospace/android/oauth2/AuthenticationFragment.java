@@ -7,10 +7,10 @@ import com.infospace.feedly.requests.GetFeedlyCodeRequest;
 import com.insp.android.oauth2.R;
 
 import android.annotation.SuppressLint;
+import android.app.Fragment;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;

@@ -2,3 +2,4 @@ build
 bin/
 gen/
 .DS_Store
+*.iml
